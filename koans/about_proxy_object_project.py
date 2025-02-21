@@ -18,17 +18,53 @@
 
 from runner.koan import *
 
+
 class Proxy:
     def __init__(self, target_object):
         # WRITE CODE HERE
 
-        #initialize '_obj' attribute last. Trust me on this!
+        # initialize '_obj' attribute last. Trust me on this!
         self._obj = target_object
+        self._messages = []
 
     # WRITE CODE HERE
+    def messages(self):
+        return self._messages
+
+    def was_called(self, command):
+        return command in self._messages
+
+    def number_of_times_called(self, command):
+        return self._messages.count(command)
+
+    @property
+    def channel(self):
+        return self._obj._channel
+
+    @channel.setter
+    def channel(self, value):
+        self._messages.append('channel')
+        self._obj._channel = value
+
+    def power(self):
+        self._messages.append('power')
+        return self._obj.power()
+
+    def is_on(self):
+        return self._obj.is_on()
+
+    def upper(self):
+        self._messages.append('upper')
+        return self._obj.upper()
+
+    def split(self):
+        self._messages.append('split')
+        return self._obj.split()
 
 # The proxy object should pass the following Koan:
 #
+
+
 class AboutProxyObjectProject(Koan):
     def test_proxy_method_returns_wrapped_object(self):
         # NOTE: The Television class is defined below
@@ -58,7 +94,6 @@ class AboutProxyObjectProject(Koan):
 
         with self.assertRaises(AttributeError):
             tv.no_such_method()
-
 
     def test_proxy_reports_methods_have_been_called(self):
         tv = Proxy(Television())
@@ -97,6 +132,8 @@ class AboutProxyObjectProject(Koan):
 # changes should be necessary to anything below this comment.
 
 # Example class using in the proxy testing above.
+
+
 class Television:
     def __init__(self):
         self._channel = None
@@ -120,6 +157,8 @@ class Television:
         return self._power == 'on'
 
 # Tests for the Television class.  All of theses tests should pass.
+
+
 class TelevisionTest(Koan):
     def test_it_turns_on(self):
         tv = Television()
